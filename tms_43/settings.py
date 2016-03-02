@@ -26,7 +26,7 @@ SECRET_KEY = '_lkp%c7-g+m!9l(a&mt_u1mfb*l)b%s-^m@(2+&$u7##$*m$83'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['framgia-tms-43.herokuapp.com',]
 
 
 # Application definition
@@ -82,12 +82,16 @@ WSGI_APPLICATION = 'tms_43.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}
+import dj_database_url
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 
 
 # Internationalization
@@ -116,9 +120,13 @@ STATICFILES_DIRS = (
     ),
 )
 
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
 ###media############
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 # URL for @login_required decorator
 LOGIN_URL = reverse_lazy('users:login')
+
+SECURE_PROXY_SSL_HEADER = (‘HTTP_X_FORWARDED_PROTO’,‘https’,)

@@ -149,7 +149,6 @@ class UserProfileView(ListView):
         return context
 
     def get(self, request, pk):
-        # current_user = get_object_or_404(User, pk= request.user.id)
         current_user = get_object_or_404(User, pk= int(self.kwargs['pk']))
         user_courses = UserCourse.objects.filter(user_id = current_user.id)
         course = Course.objects.filter(courses = user_courses)
@@ -157,13 +156,14 @@ class UserProfileView(ListView):
         subjects = Subject.objects.filter(course = course)
         tasks = Task.objects.filter(subject= subjects)
         user_tasks = UserTask.objects.filter(user_id = current_user.id)
+        activities = Activity.objects.filter(user_id = current_user.id)
         params = dict()
         params["current_user"] = current_user
-        # params["current_user"] = current_user
         params["course"] = course
         params["subjects"] = subjects
         params['tasks'] = tasks
         params['user_tasks'] = user_tasks
+        params["activities"] = activities
         return render(request, 'users/profile.html', params)
 
 @login_required
